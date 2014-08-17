@@ -1,4 +1,4 @@
-package app.sunshine.android.juanjo.com.sunshine.network;
+package app.sunshine.juanjo.network;
 
 import android.util.Log;
 

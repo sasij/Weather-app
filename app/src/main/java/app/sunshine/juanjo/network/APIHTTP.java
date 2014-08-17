@@ -1,4 +1,4 @@
-package app.sunshine.android.juanjo.com.sunshine.network;
+package app.sunshine.juanjo.network;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

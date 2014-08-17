@@ -1,10 +1,16 @@
-package app.sunshine.android.juanjo.com.sunshine;
+package app.sunshine.juanjo.views.activities;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import app.sunshine.android.juanjo.com.sunshine.fragments.ForeCastFragment;
+import app.sunshine.juanjo.R;
+import app.sunshine.juanjo.views.fragments.ForeCastFragment;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -32,9 +38,32 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+			return true;
+		}
+		if (id == R.id.action_map) {
+			openPreferredLocationMap();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
+	private void openPreferredLocationMap() {
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		String location = preferences.getString(getString(R.string.pref_location_key),
+				getString(R.string.pref_location_default));
+
+		Uri geoLocation = Uri.parse("geo:0,0?").buildUpon().appendQueryParameter("q", location)
+				.build();
+
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(geoLocation);
+
+		if (intent.resolveActivity(getPackageManager()) != null) {
+			startActivity(intent);
+		} else {
+			Log.d("SUNSHINE", "Couldn't call " + location);
+		}
+	}
 }

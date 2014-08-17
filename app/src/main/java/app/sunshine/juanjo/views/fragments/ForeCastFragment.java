@@ -1,13 +1,16 @@
-package app.sunshine.android.juanjo.com.sunshine.fragments;
+package app.sunshine.juanjo.views.fragments;
 
 /**
  * Created by juanjo on 05/08/14.
  */
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,15 +19,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-import app.sunshine.android.juanjo.com.sunshine.R;
-import app.sunshine.android.juanjo.com.sunshine.Util.WeatherJsonParser;
-import app.sunshine.android.juanjo.com.sunshine.network.APIHTTP;
+import app.sunshine.juanjo.R;
+import app.sunshine.juanjo.Util.WeatherJsonParser;
+import app.sunshine.juanjo.network.APIHTTP;
+import app.sunshine.juanjo.views.activities.DetailActivity;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -51,6 +56,12 @@ public class ForeCastFragment extends Fragment {
 	}
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		updateWeather();
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
@@ -66,14 +77,22 @@ public class ForeCastFragment extends Fragment {
 		listView = (ListView) rootView.findViewById(R.id.listview_forecast);
 		listView.setAdapter(adapter);
 
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				String info = entryList.get(position);
+				Intent intent = new Intent(getActivity(), DetailActivity.class);
+				intent.putExtra(Intent.EXTRA_TEXT, info);
+				startActivity(intent);
+			}
+		});
+
 		return rootView;
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-
-		new FetchWeatherTask().execute("14007");
 
 		// new Thread(new Runnable() {
 		// @Override
@@ -101,11 +120,19 @@ public class ForeCastFragment extends Fragment {
 
 		int id = item.getItemId();
 		if (id == R.id.action_refresh) {
-			Log.d("=>", "menu");
-			new FetchWeatherTask().execute("14007");
+			updateWeather();
 		}
 
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void updateWeather() {
+		Log.d("=>", "menu");
+		SharedPreferences preferences = PreferenceManager
+				.getDefaultSharedPreferences(getActivity());
+		String location = preferences.getString(getString(R.string.pref_location_key),
+				getString(R.string.pref_location_default));
+		new FetchWeatherTask().execute(location);
 	}
 
 	private String getUrl(String postalCode) {

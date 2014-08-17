@@ -1,4 +1,4 @@
-package app.sunshine.android.juanjo.com.sunshine.Util;
+package app.sunshine.juanjo.Util;
 
 import android.util.Log;
 
