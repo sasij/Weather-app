@@ -4,6 +4,9 @@ package app.sunshine.juanjo.views.fragments;
  * Created by juanjo on 05/08/14.
  */
 
+import java.util.Date;
+
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,15 +22,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import java.util.Date;
-
 import app.sunshine.juanjo.R;
-import app.sunshine.juanjo.Util.Utility;
-import app.sunshine.juanjo.Util.WeatherContract;
-import app.sunshine.juanjo.Util.WeatherContract.LocationEntry;
-import app.sunshine.juanjo.Util.WeatherContract.WeatherEntry;
-import app.sunshine.juanjo.network.FetchWeatherTask;
+import app.sunshine.juanjo.sync.SunshineSyncAdapter;
+import app.sunshine.juanjo.util.Utility;
+import app.sunshine.juanjo.util.WeatherContract;
+import app.sunshine.juanjo.util.WeatherContract.LocationEntry;
+import app.sunshine.juanjo.util.WeatherContract.WeatherEntry;
 import app.sunshine.juanjo.views.adapter.ForecastAdapter;
 
 /**
@@ -46,9 +46,6 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 	private static final int FORECAST_LOADER = 0;
 	private String mLocation;
 
-	// For the forecast view we're showing only a small subset of the stored
-	// data.
-	// Specify the columns we need.
 	private static final String[] FORECAST_COLUMNS = {
 			// In this case the id needs to be fully qualified with a table
 			// name, since
@@ -63,7 +60,8 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 			WeatherEntry.TABLE_NAME + "." + WeatherEntry._ID, WeatherEntry.COLUMN_DATETEXT,
 			WeatherEntry.COLUMN_SHORT_DESC, WeatherEntry.COLUMN_MAX_TEMP,
 			WeatherEntry.COLUMN_MIN_TEMP, LocationEntry.COLUMN_LOCATION_SETTING,
-			WeatherEntry.COLUMN_WEATHER_ID };
+			WeatherEntry.COLUMN_WEATHER_ID, LocationEntry.COLUMN_LATITUDE,
+			LocationEntry.COLUMN_LONGITUDE };
 
 	// These indices are tied to FORECAST_COLUMNS. If FORECAST_COLUMNS changes,
 	// these
@@ -75,6 +73,8 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 	public static final int COL_WEATHER_MIN_TEMP = 4;
 	public static final int COL_LOCATION_SETTING = 5;
 	public static final int COL_WEATHER_CONDITION_ID = 6;
+	public static final int COL_COORD_LAT = 7;
+	public static final int COL_COORD_LONG = 8;
 
 	/**
 	 * A callback interface that all activities containing this fragment must
@@ -109,8 +109,12 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_refresh) {
-			updateWeather();
+		// if (id == R.id.action_refresh) {
+		// updateWeather();
+		// return true;
+		// }
+		if (id == R.id.action_map) {
+			openPreferredLocationInMap();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -167,8 +171,53 @@ public class ForecastFragment extends Fragment implements LoaderCallbacks<Cursor
 	}
 
 	private void updateWeather() {
-		String location = Utility.getPreferredLocation(getActivity());
-		new FetchWeatherTask(getActivity()).execute(location);
+
+		// String location = Utility.getPreferredLocation(getActivity());
+		//
+		// Intent intent = new Intent(getActivity(),
+		// SunshineService.AlarmReceiver.class);
+		// intent.putExtra(SunshineService.LOCATION_QUERY_EXTRA, location);
+		//
+		// // Wrap in a pending intent which only fires once.
+		// PendingIntent pi = PendingIntent.getBroadcast(getActivity(), 0,
+		// intent,
+		// PendingIntent.FLAG_ONE_SHOT);// getBroadcast(context, 0, i, 0);
+		//
+		// AlarmManager am = (AlarmManager)
+		// getActivity().getSystemService(Context.ALARM_SERVICE);
+		//
+		// // Set the AlarmManager to wake up the system.
+		// am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 2000,
+		// pi);
+
+		SunshineSyncAdapter.syncImmediately(getActivity());
+	}
+
+	private void openPreferredLocationInMap() {
+		// Using the URI scheme for showing a location found on a map. This
+		// super-handy
+		// intent can is detailed in the "Common Intents" page of Android's
+		// developer site:
+		// http://developer.android.com/guide/components/intents-common.html#Maps
+		if (null != mForecastAdapter) {
+			Cursor c = mForecastAdapter.getCursor();
+			if (null != c) {
+				c.moveToPosition(0);
+				String posLat = c.getString(COL_COORD_LAT);
+				String posLong = c.getString(COL_COORD_LONG);
+				Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.setData(geoLocation);
+
+				if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+					startActivity(intent);
+				} else {
+					System.out.println("Couldn't call " + geoLocation.toString()
+							+ ", no receiving apps installed!");
+				}
+			}
+		}
 	}
 
 	@Override

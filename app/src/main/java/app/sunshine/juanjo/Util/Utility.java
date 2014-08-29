@@ -1,4 +1,4 @@
-package app.sunshine.juanjo.Util;
+package app.sunshine.juanjo.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,15 +1,12 @@
 package app.sunshine.juanjo.views.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import app.sunshine.juanjo.R;
+import app.sunshine.juanjo.sync.SunshineSyncAdapter;
 import app.sunshine.juanjo.views.fragments.DetailFragment;
 import app.sunshine.juanjo.views.fragments.ForecastFragment;
 
@@ -35,6 +32,8 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
 		ForecastFragment forecastFragment = ((ForecastFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.fragment_forecast));
 		forecastFragment.setUseTodayLayout(!mTwoPane);
+
+		SunshineSyncAdapter.initializeSyncAdapter(this);
 	}
 
 	@Override
@@ -55,29 +54,7 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
 			startActivity(intent);
 			return true;
 		}
-		if (id == R.id.action_map) {
-			openPreferredLocationMap();
-			return true;
-		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	private void openPreferredLocationMap() {
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		String location = preferences.getString(getString(R.string.pref_location_key),
-				getString(R.string.pref_location_default));
-
-		Uri geoLocation = Uri.parse("geo:0,0?").buildUpon().appendQueryParameter("q", location)
-				.build();
-
-		Intent intent = new Intent(Intent.ACTION_VIEW);
-		intent.setData(geoLocation);
-
-		if (intent.resolveActivity(getPackageManager()) != null) {
-			startActivity(intent);
-		} else {
-			Log.d("SUNSHINE", "Couldn't call " + location);
-		}
 	}
 
 	@Override

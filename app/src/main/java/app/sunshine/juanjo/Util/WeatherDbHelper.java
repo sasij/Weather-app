@@ -1,10 +1,10 @@
-package app.sunshine.juanjo.Util;
+package app.sunshine.juanjo.util;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import app.sunshine.juanjo.Util.WeatherContract.LocationEntry;
-import app.sunshine.juanjo.Util.WeatherContract.WeatherEntry;
+import app.sunshine.juanjo.util.WeatherContract.LocationEntry;
+import app.sunshine.juanjo.util.WeatherContract.WeatherEntry;
 
 /**
  * Created by juanjo on 17/08/14.

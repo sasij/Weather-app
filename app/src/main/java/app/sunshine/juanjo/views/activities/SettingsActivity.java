@@ -13,8 +13,8 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import app.sunshine.juanjo.R;
-import app.sunshine.juanjo.Util.WeatherContract;
-import app.sunshine.juanjo.network.FetchWeatherTask;
+import app.sunshine.juanjo.sync.SunshineSyncAdapter;
+import app.sunshine.juanjo.util.WeatherContract;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
@@ -60,7 +60,7 @@ public class SettingsActivity extends PreferenceActivity implements
 		onPreferenceChange(
 				preference,
 				PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(
-                        preference.getKey(), ""));
+						preference.getKey(), ""));
 
 		mBindingPreference = false;
 	}
@@ -72,9 +72,7 @@ public class SettingsActivity extends PreferenceActivity implements
 		// are we starting the preference activity?
 		if (!mBindingPreference) {
 			if (preference.getKey().equals(getString(R.string.pref_location_key))) {
-				FetchWeatherTask weatherTask = new FetchWeatherTask(this);
-				String location = value.toString();
-				weatherTask.execute(location);
+				SunshineSyncAdapter.syncImmediately(this);
 			} else {
 				// notify code that weather may be impacted
 				getContentResolver().notifyChange(WeatherContract.WeatherEntry.CONTENT_URI, null);

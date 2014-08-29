@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import app.sunshine.juanjo.R;
-import app.sunshine.juanjo.Util.Utility;
+import app.sunshine.juanjo.util.Utility;
 import app.sunshine.juanjo.views.fragments.ForecastFragment;
 
 /**

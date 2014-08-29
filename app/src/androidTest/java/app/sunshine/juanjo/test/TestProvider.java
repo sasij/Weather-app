@@ -9,9 +9,9 @@ import android.util.Log;
 import java.util.Map;
 import java.util.Set;
 
-import app.sunshine.juanjo.Util.WeatherContract.LocationEntry;
-import app.sunshine.juanjo.Util.WeatherContract.WeatherEntry;
-import app.sunshine.juanjo.Util.WeatherDbHelper;
+import app.sunshine.juanjo.util.WeatherContract.LocationEntry;
+import app.sunshine.juanjo.util.WeatherContract.WeatherEntry;
+import app.sunshine.juanjo.util.WeatherDbHelper;
 
 /**
  * Created by juanjo on 17/08/14.

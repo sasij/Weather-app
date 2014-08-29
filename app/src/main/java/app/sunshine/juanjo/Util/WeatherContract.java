@@ -1,4 +1,4 @@
-package app.sunshine.juanjo.Util;
+package app.sunshine.juanjo.util;
 
 /*
  * Copyright (C) 2014 The Android Open Source Project
