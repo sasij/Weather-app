@@ -10,18 +10,31 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import app.sunshine.juanjo.R;
-import app.sunshine.juanjo.views.fragments.ForeCastFragment;
+import app.sunshine.juanjo.views.fragments.DetailFragment;
+import app.sunshine.juanjo.views.fragments.ForecastFragment;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements ForecastFragment.Callback {
+
+	private boolean mTwoPane = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new ForeCastFragment()).commit();
+
+		if (findViewById(R.id.weather_detail_container) != null) {
+
+			mTwoPane = true;
+
+			if (savedInstanceState == null) {
+				getSupportFragmentManager().beginTransaction()
+						.replace(R.id.weather_detail_container, new DetailFragment()).commit();
+			}
 		}
+
+		ForecastFragment forecastFragment = ((ForecastFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.fragment_forecast));
+		forecastFragment.setUseTodayLayout(!mTwoPane);
 	}
 
 	@Override
@@ -64,6 +77,28 @@ public class MainActivity extends ActionBarActivity {
 			startActivity(intent);
 		} else {
 			Log.d("SUNSHINE", "Couldn't call " + location);
+		}
+	}
+
+	@Override
+	public void onItemSelected(String date) {
+		if (mTwoPane) {
+			// In two-pane mode, show the detail view in this activity by
+			// adding or replacing the detail fragment using a
+			// fragment transaction.
+			Bundle args = new Bundle();
+			args.putString(DetailActivity.DATE_KEY, date);
+
+			DetailFragment fragment = new DetailFragment();
+			fragment.setArguments(args);
+
+			getSupportFragmentManager().beginTransaction()
+					.replace(R.id.weather_detail_container, fragment).commit();
+
+		} else {
+			Intent intent = new Intent(this, DetailActivity.class).putExtra(
+					DetailActivity.DATE_KEY, date);
+			startActivity(intent);
 		}
 	}
 }

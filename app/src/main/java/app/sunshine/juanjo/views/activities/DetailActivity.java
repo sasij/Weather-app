@@ -2,30 +2,33 @@ package app.sunshine.juanjo.views.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.ShareActionProvider;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import app.sunshine.juanjo.R;
+import app.sunshine.juanjo.views.fragments.DetailFragment;
 
 public class DetailActivity extends ActionBarActivity {
+
+	public static final String DATE_KEY = "forecast_date";
+	private static final String LOCATION_KEY = "location";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_detail);
 		if (savedInstanceState == null) {
+
+			String date = getIntent().getStringExtra(DATE_KEY);
+
+			Bundle arguments = new Bundle();
+			arguments.putString(DetailActivity.DATE_KEY, date);
+
+			DetailFragment fragment = new DetailFragment();
+			fragment.setArguments(arguments);
+
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new DetailFragment()).commit();
+					.add(R.id.weather_detail_container, fragment).commit();
 		}
 	}
 
@@ -43,78 +46,9 @@ public class DetailActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			Intent intent = new Intent(this, SettingsActivity.class);
-			startActivity(intent);
+			startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class DetailFragment extends Fragment {
-
-		private static final String LOG_TAG = DetailFragment.class.getSimpleName();
-		private static final String FORECAST_SHARE_HASHTAG = "#SunshineApp";
-		private String mForecastStr;
-
-		TextView forecastTextView;
-
-		public DetailFragment() {
-			setHasOptionsMenu(true);
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-
-			forecastTextView = (TextView) rootView.findViewById(R.id.detail_text);
-			mForecastStr = forecastTextView.getText().toString();
-
-			return rootView;
-		}
-
-		@Override
-		public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-			super.onViewCreated(view, savedInstanceState);
-			String extra = getActivity().getIntent().getStringExtra(Intent.EXTRA_TEXT);
-			forecastTextView.setText(extra);
-		}
-
-		@Override
-		public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-			// Inflate the menu; this adds items to the action bar if it is
-			// present.
-			inflater.inflate(R.menu.detail_fragment, menu);
-
-			// Retrieve the share menu item
-			MenuItem menuItem = menu.findItem(R.id.action_share);
-
-			// Get the provider and hold onto it to set/change the share intent.
-			ShareActionProvider mShareActionProvider = (ShareActionProvider) MenuItemCompat
-					.getActionProvider(menuItem);
-
-			// Attach an intent to this ShareActionProvider. You can update this
-			// at any time,
-			// like when the user selects a new piece of data they might like to
-			// share.
-			if (mShareActionProvider != null) {
-				mShareActionProvider.setShareIntent(createShareForecastIntent());
-			} else {
-				Log.d(LOG_TAG, "Share Action Provider is null?");
-			}
-
-		}
-
-		private Intent createShareForecastIntent() {
-			Intent shareIntent = new Intent(Intent.ACTION_SEND);
-			shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-			shareIntent.setType("text/plain");
-			shareIntent.putExtra(Intent.EXTRA_TEXT, mForecastStr + FORECAST_SHARE_HASHTAG);
-
-			return shareIntent;
-		}
 	}
 }

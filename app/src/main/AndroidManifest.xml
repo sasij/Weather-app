@@ -7,11 +7,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
         android:theme="@style/AppTheme">
         <activity
             android:name="app.sunshine.juanjo.views.activities.MainActivity"
+            android:theme="@style/ForecastTheme"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,11 +29,16 @@
         </activity>
         <activity
             android:name="app.sunshine.juanjo.views.activities.SettingsActivity"
+            android:label="@string/action_settings"
             android:parentActivityName="app.sunshine.juanjo.views.activities.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="app.sunshine.juanjo.views.activities.MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="app.sunshine.juanjo"
+            android:name=".Util.WeatherProvider" />
     </application>
 
 </manifest>
