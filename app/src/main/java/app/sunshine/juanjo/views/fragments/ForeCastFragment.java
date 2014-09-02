@@ -4,8 +4,6 @@ package app.sunshine.juanjo.views.fragments;
  * Created by juanjo on 05/08/14.
  */
 
-import java.util.Date;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,6 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import java.util.Date;
+
 import app.sunshine.juanjo.R;
 import app.sunshine.juanjo.sync.SunshineSyncAdapter;
 import app.sunshine.juanjo.util.Utility;

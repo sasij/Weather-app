@@ -76,6 +76,8 @@ public class SunshineSyncAdapter extends AbstractThreadedSyncAdapter {
 	public void onPerformSync(Account account, Bundle extras, String authority,
 			ContentProviderClient provider, SyncResult syncResult) {
 
+		System.out.println("=> OnPerformSync");
+
 		String locationQuery = Utility.getPreferredLocation(getContext());
 
 		// These two need to be declared outside the try/catch
