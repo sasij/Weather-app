@@ -6,20 +6,19 @@
     </style>
 
     <!-- Main activity theme. -->
-    <style name="ForecastTheme" parent="AppTheme">
-        <item name="android:actionBarStyle">@style/ActionBar.Solid.Sunshine.NoTitle</item>
-    </style>
+    <!--<style name="ForecastTheme" parent="AppTheme">-->
+    <!--<item name="android:actionBarStyle">@style/ActionBar.Solid.Sunshine.NoTitle</item>-->
+    <!--</style>-->
 
     <!-- ActionBar styles -->
-    <style name="ActionBar.Solid.Sunshine"
-        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="ActionBar.Solid.Sunshine" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/sunshine_blue</item>
     </style>
 
     <!-- main activity action bar styles -->
-    <style name="ActionBar.Solid.Sunshine.NoTitle" parent="@style/ActionBar.Solid.Sunshine">
-        <item name="android:displayOptions">useLogo|showHome</item>
-        <item name="android:logo">@drawable/ic_logo</item>
-    </style>
+    <!--<style name="ActionBar.Solid.Sunshine.NoTitle" parent="@style/ActionBar.Solid.Sunshine">-->
+    <!--<item name="android:displayOptions">useLogo|showHome</item>-->
+    <!--<item name="android:logo">@drawable/ic_launcher</item>-->
+    <!--</style>-->
 
 </resources>
